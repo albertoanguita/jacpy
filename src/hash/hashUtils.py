@@ -1,6 +1,6 @@
 import hashlib
 
-from io.ioUtils import DirItemPolicy, dirItems
+from src.io.ioUtils import DirItemPolicy, dirItems
 
 bufferSize = 65536
 
