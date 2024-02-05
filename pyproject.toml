@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 
 [project]
-name = "albertoanguita-jacpy"
+name = "jacpy"
 version = "0.0.1"
 authors = [
   { name="Alberto Anguita", email="alberto.anguita@gmail.com" },
