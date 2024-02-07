@@ -1,6 +1,6 @@
 import hashlib
 
-from src.io.ioUtils import DirItemPolicy, dirItems
+from src.jacpy.io.ioUtils import DirItemPolicy, dirItems
 
 bufferSize = 65536
 
