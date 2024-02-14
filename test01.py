@@ -1,5 +1,5 @@
-from jacpy.hash import hashUtils
+from src.jacpy.io import ioUtils
 
-items = hashUtils.dirItems('C:/Users/alber/Desktop/BACKUP ABRIL 2022', hashUtils.DirItemPolicy.AllAlphabetic, 0, 2)
+items = ioUtils.dirItems('C:/Users/alber/Desktop/BACKUP ABRIL 2022', ioUtils.DirItemPolicy.AllAlphabetic, ioUtils.DirItemOutputForm.Name, 0, 2)
 
 print(items)
