@@ -1,3 +1,4 @@
+import fnmatch
 import os
 from enum import Enum
 
@@ -13,7 +14,11 @@ class DirItemOutputForm(Enum):
     FullPath = 1
     Name = 2
 
-def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputForm.FullPath, fromDepth=0, maxDepth=65535):
+def appendItem(items, itemPath, item, outputForm=DirItemOutputForm.FullPath, fileMask=None):
+    if fileMask == None or fnmatch.fnmatch(item, fileMask):
+        items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
+
+def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputForm.FullPath, fileMask=None, fromDepth=0, maxDepth=65535):
     if maxDepth < 0:
         return []
     # the items that will be returned by the function
@@ -31,13 +36,15 @@ def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputFor
                 fileItems.append(itemPath)
                 fileItemsNames.append(item)
             elif files == DirItemPolicy.AllAlphabetic or files == DirItemPolicy.OnlyFilesAlphabetic:
-                items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
+                appendItem(items, itemPath, item, outputForm, fileMask)
+                # items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
         elif os.path.isdir(itemPath):
             directoryItems.append(itemPath)
             directoryItemsNames.append(item)
             if files == DirItemPolicy.AllAlphabetic or files == DirItemPolicy.OnlyDirsAlphabetic:
                 if fromDepth <= 0:
-                    items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
+                    appendItem(items, itemPath, item, outputForm, fileMask)
+                    # items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
 
     # generate final list
     if fromDepth <= 0:
