@@ -55,6 +55,6 @@ def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputFor
 
     # recursive calls
     for directory in directoryItems:
-        items += dirItems(directory, files, outputForm, fromDepth - 1, maxDepth - 1)
+        items += dirItems(directory, files, outputForm, fileMask, fromDepth - 1, maxDepth - 1)
 
     return items
