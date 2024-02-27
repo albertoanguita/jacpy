@@ -1,4 +1,4 @@
-
+import math
 
 
 def partition2DGeometry(
@@ -6,18 +6,18 @@ def partition2DGeometry(
         x2: int,
         partitionX1: int,
         partitionX2: int,
-        overlap: float = 0.35,
+        minOverlap: float = 0.35,
         growRatio: float = 1) -> [((int, int), (int, int))]:
-    x1Partitions = partition1DGeometry(x1, partitionX1, overlap, growRatio=1)
-    x2Partitions = partition1DGeometry(x2, partitionX2, overlap, growRatio=1)
+    x1Partitions = partition1DGeometry(x1, partitionX1, minOverlap, growRatio=1)
+    x2Partitions = partition1DGeometry(x2, partitionX2, minOverlap, growRatio=1)
     partitions = []
     for x1Partition in x1Partitions:
         for x2Partition in x2Partitions:
             partitions.append(((x1Partition[0], x2Partition[0]), (x1Partition[1], x2Partition[1])))
 
     if partitions and growRatio > 1:
-        partitions += partition2DGeometry(x1, x2, int(partitionX1 * growRatio), int(partitionX2 * growRatio), overlap,
-                                      growRatio)
+        partitions += partition2DGeometry(x1, x2, int(partitionX1 * growRatio), int(partitionX2 * growRatio), minOverlap,
+                                          growRatio)
     return partitions
 
 
@@ -26,7 +26,7 @@ def partition2DGeometry(
 def partition1DGeometry(
         x: int,
         partition: int,
-        overlap: float = 0.35,
+        minOverlap: float = 0.35,
         growRatio: float = 1) -> [(int, int)]:
     if x <= 0:
         raise Exception(f'Geometry must be a positive integer. Received {x}')
@@ -34,8 +34,8 @@ def partition1DGeometry(
     if partition <= 0:
         raise Exception(f'Partition must be a positive integer. Received {partition}')
 
-    if overlap <= 0 or overlap >= 1:
-        raise Exception(f'Overlap must be a float value between 0 and 1 (both excluded). Received {overlap}')
+    if minOverlap <= 0 or minOverlap >= 1:
+        raise Exception(f'Overlap must be a float value between 0 and 1 (both excluded). Received {minOverlap}')
 
     if growRatio < 1:
         raise Exception(f'Grow ratio must be a float value greater than 1. Received {growRatio}')
@@ -46,11 +46,11 @@ def partition1DGeometry(
     if partition > x:
         return []
     else:
-        noOverlap = (1 - overlap) * partition
+        noOverlap = (1 - minOverlap) * partition
 
         partitionNumber = (x - partition) / noOverlap + 1
         partitionNumber = max(2.0, partitionNumber)
-        partitionNumber = round(partitionNumber)
+        partitionNumber = math.ceil(partitionNumber)
 
         lastPartitionPos = x - partition
         partitions = []
@@ -61,6 +61,6 @@ def partition1DGeometry(
         partitions.append((x - partition, x))
 
         if partitions and growRatio > 1:
-            partitions += partition1DGeometry(x, int(partition * growRatio), overlap, growRatio)
+            partitions += partition1DGeometry(x, int(partition * growRatio), minOverlap, growRatio)
 
         return partitions
