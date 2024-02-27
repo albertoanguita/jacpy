@@ -1,12 +1,12 @@
 import hashlib
 
-from jacpy.io.ioUtils import DirItemPolicy, dirItems
+from src.jacpy.io.ioUtils import DirItemPolicy, dirItems
 
 bufferSize = 65536
 
 def digestHexFilesInPath(path, fromDepth=0, maxDepth=65535):
     hash = hashlib.sha256()
-    files = dirItems(path, DirItemPolicy.OnlyFilesAlphabetic, fromDepth, maxDepth)
+    files = dirItems(path, DirItemPolicy.OnlyFilesAlphabetic, fromDepth=fromDepth, maxDepth=maxDepth)
     for file in files:
         with open(file, 'rb') as f:
             while True:

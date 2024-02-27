@@ -1,3 +1,4 @@
+from src.jacpy.hash import hashUtils
 from src.jacpy.io import ioUtils
 from src.jacpy.geometry import geoUtils
 
