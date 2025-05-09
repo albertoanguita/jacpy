@@ -38,7 +38,7 @@ def partition1DGeometry(
         raise Exception(f'Overlap must be a float value between 0 and 1 (both excluded). Received {minOverlap}')
 
     if growRatio < 1:
-        raise Exception(f'Grow ratio must be a float value greater than 1. Received {growRatio}')
+        raise Exception(f'Grow ratio must be a float value greater or equal than 1. Received {growRatio}')
 
     if partition == x:
         return [(0, x)]
@@ -47,7 +47,6 @@ def partition1DGeometry(
         return []
     else:
         noOverlap = (1 - minOverlap) * partition
-
         partitionNumber = (x - partition) / noOverlap + 1
         partitionNumber = max(2.0, partitionNumber)
         partitionNumber = math.ceil(partitionNumber)

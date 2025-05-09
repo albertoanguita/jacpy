@@ -14,11 +14,11 @@ class DirItemOutputForm(Enum):
     FullPath = 1
     Name = 2
 
-def appendItem(items, itemPath, item, outputForm=DirItemOutputForm.FullPath, fileMask=None):
-    if fileMask == None or fnmatch.fnmatch(item, fileMask):
+def appendItem(items, itemPath, item, outputForm=DirItemOutputForm.FullPath, fileMask=None, fileMaskNot=None):
+    if (fileMask == None or fnmatch.fnmatch(item, fileMask)) and (fileMaskNot == None or not fnmatch.fnmatch(item, fileMaskNot)):
         items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
 
-def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputForm.FullPath, fileMask=None, fromDepth=0, maxDepth=65535):
+def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputForm.FullPath, fileMask=None, fileMaskNot=None, fromDepth=0, maxDepth=65535):
     if maxDepth < 0:
         return []
     # the items that will be returned by the function
@@ -36,14 +36,14 @@ def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputFor
                 fileItems.append(itemPath)
                 fileItemsNames.append(item)
             elif files == DirItemPolicy.AllAlphabetic or files == DirItemPolicy.OnlyFilesAlphabetic:
-                appendItem(items, itemPath, item, outputForm, fileMask)
+                appendItem(items, itemPath, item, outputForm, fileMask, fileMaskNot)
                 # items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
         elif os.path.isdir(itemPath):
             directoryItems.append(itemPath)
             directoryItemsNames.append(item)
             if files == DirItemPolicy.AllAlphabetic or files == DirItemPolicy.OnlyDirsAlphabetic:
                 if fromDepth <= 0:
-                    appendItem(items, itemPath, item, outputForm, fileMask)
+                    appendItem(items, itemPath, item, outputForm, fileMask, fileMaskNot)
                     # items.append(itemPath) if outputForm == DirItemOutputForm.FullPath else items.append(item)
 
     # generate final list
@@ -55,6 +55,43 @@ def dirItems(path, files=DirItemPolicy.FilesAndDirs, outputForm=DirItemOutputFor
 
     # recursive calls
     for directory in directoryItems:
-        items += dirItems(directory, files, outputForm, fileMask, fromDepth - 1, maxDepth - 1)
+        items += dirItems(directory, files, outputForm, fileMask, fileMaskNot, fromDepth - 1, maxDepth - 1)
 
     return items
+
+
+
+
+def RemoveFilesWithParenthesis(path):
+    items = dirItems(path, DirItemPolicy.OnlyFilesAlphabetic,
+                             DirItemOutputForm.FullPath, "*(*)*")
+    for item in items:
+        os.remove(item)
+
+def RemoveFiles170x170(path):
+    items = dirItems(path, DirItemPolicy.OnlyFilesAlphabetic,
+                             DirItemOutputForm.FullPath, "*170x170*")
+    for item in items:
+        os.remove(item)
+
+def KeepJpgFiles(path):
+    items = dirItems(path, DirItemPolicy.OnlyFilesAlphabetic,
+                             DirItemOutputForm.FullPath, fileMaskNot="*.jpg")
+    for item in items:
+        os.remove(item)
+
+
+def RemoveNonUtf8Chars(s, rep='_'):
+    index = 0
+    modified = False
+    for c in s:
+        if (len(c.encode('utf-8')) > 1):
+            s = ReplaceChar(s, index, rep)
+            modified = True
+        index += 1
+    return s, modified
+
+
+def ReplaceChar(s, index, char):
+    s = s[:index] + char + s[index + 1:]
+    return s
