@@ -16,3 +16,6 @@ This runs a configured workflow that can be seen under "Actions". It just runs t
 
 MAYBE
 NOTE: update to v0.1.0 (ADD THE 'v'!!!!!!!!!!!!!!!)
+
+
+To add locally, go to interpreter settings, show all, show interpreter files, add "c:\users\alber\repos\jacpy\src"
